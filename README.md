@@ -7,7 +7,7 @@
 
 Simple component for updating time labels at right time.
 
-Notifies you whenever given calendar unit will change. All is done by using Foundation framework. No magix stuff :)
+Notifies you whenever given calendar unit will change. All is done by using Foundation framework. No magic stuff :)
 
 
 ## Usage
