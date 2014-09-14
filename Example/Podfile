@@ -1,0 +1,10 @@
+target 'RKCalendarLink', :exclusive => true do
+  pod "RKCalendarLink", :path => "../"
+end
+
+target 'Tests', :exclusive => true do
+  pod "RKCalendarLink", :path => "../"
+
+  pod 'Specta', '~> 0.2.1'
+  pod 'Expecta'
+end
