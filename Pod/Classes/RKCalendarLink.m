@@ -5,7 +5,9 @@
 
 #import "RKCalendarLink.h"
 
-#import	<NSDateComponents-CalendarUnits/NSDateComponents+CalendarUnits.h>
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
+	#import	<NSDateComponents-CalendarUnits/NSDateComponents+CalendarUnits.h>
+#endif
 
 
 
@@ -122,7 +124,11 @@
 
 	// create components by setting value
 	NSDateComponents * compsPlus = [[NSDateComponents alloc] init];
+#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
 	[compsPlus setComponent:unitInterval forCalendarUnit:calendarUnit];
+#elif TARGET_OS_MAC
+	[compsPlus setValue:unitInterval forComponent:calendarUnit];
+#endif
 
 	// create final date
 	NSDate * dateBySetting = [calendar dateByAddingComponents:compsPlus toDate:croppedDate options:0];
@@ -136,14 +142,15 @@
 
 + (BOOL) __isValidCalendarUnit:(NSCalendarUnit)calendarUnit
 {
-	switch ( calendarUnit )
+	CFCalendarUnit cfCalendarUnit = (CFCalendarUnit) calendarUnit;
+	switch ( cfCalendarUnit )
 	{
-		case NSCalendarUnitYear:
-		case NSCalendarUnitMonth:
-		case NSCalendarUnitDay:
-		case NSCalendarUnitHour:
-		case NSCalendarUnitMinute:
-		case NSCalendarUnitSecond:
+		case kCFCalendarUnitYear:
+		case kCFCalendarUnitMonth:
+		case kCFCalendarUnitDay:
+		case kCFCalendarUnitHour:
+		case kCFCalendarUnitMinute:
+		case kCFCalendarUnitSecond:
 			return YES;
 
 		default:
