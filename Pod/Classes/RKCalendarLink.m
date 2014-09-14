@@ -28,7 +28,7 @@
 
 	if ( ![self.class __isValidCalendarUnit:calendarUnit] )
 	{
-		NSLog(@"RKCalendarLink: WARN: not valid calendar unit %d, see RKCalendarUnit.h", calendarUnit);
+		NSLog(@"RKCalendarLink: WARN: not valid calendar unit %u, see RKCalendarUnit.h", (unsigned)calendarUnit);
 		return nil;
 	}
 
@@ -64,7 +64,7 @@
 {
 	if ( ![self.class __isValidCalendarUnit:calendarUnit] )
 	{
-		NSLog(@"RKCalendarLink: WARN: not valid calendar unit %d", calendarUnit);
+		NSLog(@"RKCalendarLink: WARN: not valid calendar unit %u", (unsigned)calendarUnit);
 
 		[self __invalidateTimer];
 		return;
