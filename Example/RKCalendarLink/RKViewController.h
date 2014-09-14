@@ -8,6 +8,12 @@
 
 #import <UIKit/UIKit.h>
 
+
+
+@class RKCalendarLink;
+
+
+
 @interface RKViewController : UIViewController
 
 @end

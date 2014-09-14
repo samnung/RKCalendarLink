@@ -8,22 +8,39 @@
 
 #import "RKViewController.h"
 
+#import <RKCalendarLink/RKCalendarLink.h>
+
+
+
 @interface RKViewController ()
+
+@property (weak, nonatomic) IBOutlet UILabel * timeLabel;
+
+@property (strong, nonatomic) NSDateFormatter * dateFormatter;
+
+@property (strong, nonatomic) RKCalendarLink * calendarLink;
 
 @end
 
+
+
 @implementation RKViewController
 
-- (void)viewDidLoad
+- (void) viewDidLoad
 {
-    [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-}
+	[super viewDidLoad];
 
-- (void)didReceiveMemoryWarning
-{
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+	NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
+	formatter.dateFormat = @"HH:mm";
+	self.dateFormatter = formatter;
+
+	__weak __typeof(self) w_self = self;
+	self.calendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitMinute updateBlock:^ {
+
+		w_self.timeLabel.text = [w_self.dateFormatter stringFromDate:[NSDate date]];
+
+		NSLog(@"minutes has changed");
+	}];
 }
 
 @end

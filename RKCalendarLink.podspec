@@ -10,29 +10,24 @@
 Pod::Spec.new do |s|
   s.name             = "RKCalendarLink"
   s.version          = "0.1.0"
-  s.summary          = "A short description of RKCalendarLink."
+  s.summary          = "CADisplayLink for calendar"
   s.description      = <<-DESC
-                       An optional longer description of RKCalendarLink
+                       Simple component for updating time labels at right time.
 
-                       * Markdown format.
-                       * Don't worry about the indent, we strip it!
+											 Notifies you whenever given calendar unit will change.
                        DESC
-  s.homepage         = "https://github.com/<GITHUB_USERNAME>/RKCalendarLink"
-  # s.screenshots     = "www.example.com/screenshots_1", "www.example.com/screenshots_2"
+  s.homepage         = "https://github.com/samnung/RKCalendarLink"
   s.license          = 'MIT'
   s.author           = { "Roman Kříž" => "samnung@gmail.com" }
-  s.source           = { :git => "https://github.com/<GITHUB_USERNAME>/RKCalendarLink.git", :tag => s.version.to_s }
-  # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.source           = { :git => "https://github.com/samnung/RKCalendarLink.git", :tag => "v#{s.version}" }
+  s.social_media_url = 'https://twitter.com/_samnung_'
 
-  s.platform     = :ios, '7.0'
+  s.platform     = :ios, '6.0'
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes'
-  s.resource_bundles = {
-    'RKCalendarLink' => ['Pod/Assets/*.png']
-  }
+  s.public_header_files = 'Pod/Classes/**/*.h'
+  s.frameworks = 'Foundation'
 
-  # s.public_header_files = 'Pod/Classes/**/*.h'
-  # s.frameworks = 'UIKit', 'MapKit'
-  # s.dependency 'AFNetworking', '~> 2.3'
+	s.dependency 'NSDateComponents-CalendarUnits', '~> 0.0.2'
 end
