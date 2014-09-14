@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="RKCalendarLink" type="AppleRunConfiguration" factoryName="Application" WORKING_DIR="" PASS_PARENT_ENVS="FALSE" PROJECT_NAME="RKCalendarLink" TARGET_NAME="RKCalendarLink" CONFIG_NAME="Debug" SCHEME_NAME="RKCalendarLink" RUN_TARGET_PROJECT_NAME="RKCalendarLink" RUN_TARGET_NAME="RKCalendarLink" MAKE_ACTIVE="TRUE" WAIT_FOR="FALSE">
+    <envs />
+    <RunnerSettings RunnerId="AppRunner" />
+    <ConfigurationWrapper RunnerId="AppRunner" />
+    <method />
+  </configuration>
+</component>
