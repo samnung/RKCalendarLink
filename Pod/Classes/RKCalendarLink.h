@@ -41,7 +41,7 @@
  @param calendarUnit  tracked calendar unit
  @param updateBlock  block, that will be fired after every specified calendar unit changes
  */
-- (instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit updateBlock:(nonnull void (^)())updateBlock;
+- (nullable instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit updateBlock:(nonnull void (^)())updateBlock;
 
 /**
  Removes the object from all runloop modes (releasing the receiver if

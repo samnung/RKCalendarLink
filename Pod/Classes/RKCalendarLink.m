@@ -197,9 +197,9 @@
             return NSStringFromSelector(@selector(weekday));
         case NSCalendarUnitWeekdayOrdinal:
             return NSStringFromSelector(@selector(weekdayOrdinal));
-        case NSQuarterCalendarUnit:
+        case NSCalendarUnitQuarter:
             return NSStringFromSelector(@selector(quarter));
-        case NSWeekOfMonthCalendarUnit:
+        case NSCalendarUnitWeekOfMonth:
             return NSStringFromSelector(@selector(weekOfMonth));
         case NSCalendarUnitWeekOfYear:
             return NSStringFromSelector(@selector(weekOfYear));
