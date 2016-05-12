@@ -5,16 +5,11 @@
 
 #import "RKCalendarLink.h"
 
-#if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-	#import	<NSDateComponents-CalendarUnits/NSDateComponents+CalendarUnits.h>
-#endif
-
-
 
 @interface RKCalendarLink ()
 
-@property (nonatomic) NSTimer * timer;
-@property (nonatomic, copy) void (^ updateBlock)();
+@property (nonatomic, nullable) NSTimer * timer;
+@property (nonatomic, nonnull, copy) void (^ updateBlock)();
 
 @end
 
@@ -130,7 +125,7 @@
 	// create components by setting value
 	NSDateComponents * compsPlus = [[NSDateComponents alloc] init];
 #if TARGET_IPHONE_SIMULATOR || TARGET_OS_IPHONE
-	[compsPlus setComponent:unitInterval forCalendarUnit:calendarUnit];
+    [self.class __setComponent:unitInterval forCalendarUnit:calendarUnit inComponents:compsPlus];
 #elif TARGET_OS_MAC
 	[compsPlus setValue:unitInterval forComponent:calendarUnit];
 #endif
@@ -161,6 +156,67 @@
 		default:
 			return NO;
 	}
+}
+
+
+
+
+
+/*
+ Taken from https://github.com/erichoracek/NSDateComponents-CalendarUnits to remove any dependecies and future problems with integration
+ */
++ (NSInteger) __componentForCalendarUnit:(NSCalendarUnit)calendarUnit inComponents:(NSDateComponents *)components
+{
+    return [[components valueForKey:[self __keyForCalendarUnit:calendarUnit]] integerValue];
+}
+
++ (void) __setComponent:(NSInteger)component forCalendarUnit:(NSCalendarUnit)calendarUnit inComponents:(NSDateComponents *)components
+{
+    [components setValue:@(component) forKeyPath:[self __keyForCalendarUnit:calendarUnit]];
+}
+
++ (NSString *) __keyForCalendarUnit:(NSCalendarUnit)calendarUnit
+{
+    NSAssert1(((calendarUnit & (calendarUnit - 1)) == 0), @"calendarUnit (%@) must not be a masked value", @(calendarUnit));
+    switch (calendarUnit) {
+        case NSCalendarUnitEra:
+            return NSStringFromSelector(@selector(era));
+        case NSCalendarUnitYear:
+            return NSStringFromSelector(@selector(year));
+        case NSCalendarUnitMonth:
+            return NSStringFromSelector(@selector(month));
+        case NSCalendarUnitDay:
+            return NSStringFromSelector(@selector(day));
+        case NSCalendarUnitHour:
+            return NSStringFromSelector(@selector(hour));
+        case NSCalendarUnitMinute:
+            return NSStringFromSelector(@selector(minute));
+        case NSCalendarUnitSecond:
+            return NSStringFromSelector(@selector(second));
+        case NSCalendarUnitWeekday:
+            return NSStringFromSelector(@selector(weekday));
+        case NSCalendarUnitWeekdayOrdinal:
+            return NSStringFromSelector(@selector(weekdayOrdinal));
+        case NSQuarterCalendarUnit:
+            return NSStringFromSelector(@selector(quarter));
+        case NSWeekOfMonthCalendarUnit:
+            return NSStringFromSelector(@selector(weekOfMonth));
+        case NSCalendarUnitWeekOfYear:
+            return NSStringFromSelector(@selector(weekOfYear));
+        case NSCalendarUnitYearForWeekOfYear:
+            return NSStringFromSelector(@selector(yearForWeekOfYear));
+#if __MAC_OS_X_VERSION_MAX_ALLOWED >= 1070 || __NSCALENDAR_COND_IOS_5_0
+        case NSCalendarUnitNanosecond:
+            return NSStringFromSelector(@selector(nanosecond));
+#endif
+        case NSCalendarUnitCalendar:
+            return NSStringFromSelector(@selector(calendar));
+        case NSCalendarUnitTimeZone:
+            return NSStringFromSelector(@selector(timeZone));
+        default:
+            NSAssert1(NO, @"Invalid Calendar Unit: %@", @(calendarUnit));
+            return nil;
+    }
 }
 
 @end

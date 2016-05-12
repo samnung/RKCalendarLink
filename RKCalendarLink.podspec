@@ -20,7 +20,4 @@ Pod::Spec.new do |s|
   s.source_files = 'Pod/Classes'
   s.public_header_files = 'Pod/Classes/**/*.h'
   s.frameworks = 'Foundation'
-
-	s.ios.dependency 'NSDateComponents-CalendarUnits', '~> 0.0.2'
 end
-
