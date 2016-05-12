@@ -1,6 +1,6 @@
 # RKCalendarLink
 
-[![CI Status](http://img.shields.io/travis/samnung/RKCalendarLink.svg?style=flat)](https://travis-ci.org/Roman Kříž/RKCalendarLink)
+[![CI Status](http://img.shields.io/travis/samnung/RKCalendarLink.svg?style=flat)](https://travis-ci.org/samnung/RKCalendarLink)
 [![Version](https://img.shields.io/cocoapods/v/RKCalendarLink.svg?style=flat)](http://cocoadocs.org/docsets/RKCalendarLink)
 [![License](https://img.shields.io/cocoapods/l/RKCalendarLink.svg?style=flat)](http://cocoadocs.org/docsets/RKCalendarLink)
 [![Platform](https://img.shields.io/cocoapods/p/RKCalendarLink.svg?style=flat)](http://cocoadocs.org/docsets/RKCalendarLink)
