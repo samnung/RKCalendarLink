@@ -1,0 +1,25 @@
+PODS:
+  - Expecta (1.0.5)
+  - NSDateComponents-CalendarUnits (0.0.2)
+  - RKCalendarLink (0.1.0):
+    - NSDateComponents-CalendarUnits (~> 0.0.2)
+  - Specta (0.2.1)
+
+DEPENDENCIES:
+  - Expecta
+  - RKCalendarLink (from `../`)
+  - Specta (~> 0.2.1)
+
+EXTERNAL SOURCES:
+  RKCalendarLink:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  Expecta: e1c022fcd33910b6be89c291d2775b3fe27a89fe
+  NSDateComponents-CalendarUnits: cc02ddfebaf1fb14d941085101ad0f63524edd5b
+  RKCalendarLink: 18c09baa7dd392964963661d874b8eb4dcceb51b
+  Specta: 15a276a6343867b426d5ed135d5aa4d04123a573
+
+PODFILE CHECKSUM: d71692bdb06da1f76c5e712666944d0fb85d0d32
+
+COCOAPODS: 1.0.0

@@ -13,8 +13,8 @@ Pod::Spec.new do |s|
   s.source           = { :git => "https://github.com/samnung/RKCalendarLink.git", :tag => "v#{s.version}" }
   s.social_media_url = 'https://twitter.com/_samnung_'
 
-	s.ios.deployment_target = "6.0"
-	s.osx.deployment_target = "10.9"
+  s.ios.deployment_target = "6.0"
+  s.osx.deployment_target = "10.9"
   s.requires_arc = true
 
   s.source_files = 'Pod/Classes'
@@ -23,3 +23,4 @@ Pod::Spec.new do |s|
 
 	s.ios.dependency 'NSDateComponents-CalendarUnits', '~> 0.0.2'
 end
+

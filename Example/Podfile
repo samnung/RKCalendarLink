@@ -1,12 +1,11 @@
-target 'RKCalendarLink', :exclusive => true do
-  pod "RKCalendarLink", :path => "../"
-	pod 'NSDateComponents-CalendarUnits', '~> 0.0.2'
-end
 
-target 'Tests', :exclusive => true do
+target 'RKCalendarLink' do
   pod "RKCalendarLink", :path => "../"
-	pod 'NSDateComponents-CalendarUnits', '~> 0.0.2'
 
-  pod 'Specta', '~> 0.2.1'
-  pod 'Expecta'
+  target 'Tests' do
+    inherit! :search_paths
+
+    pod 'Specta', '~> 0.2.1'
+    pod 'Expecta'
+  end
 end
