@@ -43,4 +43,10 @@
  */
 - (instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit updateBlock:(void (^)())updateBlock;
 
+/**
+ Removes the object from all runloop modes (releasing the receiver if
+ it has been implicitly retained) and releases the 'target' object.
+ */
+- (void) invalidate;
+
 @end

@@ -76,6 +76,11 @@
 	[self __scheduleNext];
 }
 
+- (void) invalidate
+{
+    [self __invalidateTimer];
+}
+
 
 #pragma mark Private
 
