@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.license          = 'MIT'
   s.author           = { "Roman Kříž" => "samnung@gmail.com" }
   s.source           = { :git => "https://github.com/samnung/RKCalendarLink.git", :tag => "v#{s.version}" }
-  s.social_media_url = 'https://twitter.com/_samnung_'
+  s.social_media_url = 'https://twitter.com/roman__kriz'
 
   s.ios.deployment_target = "6.0"
   s.osx.deployment_target = "10.9"
