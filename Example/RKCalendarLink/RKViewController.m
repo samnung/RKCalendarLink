@@ -14,11 +14,12 @@
 
 @interface RKViewController ()
 
-@property (weak, nonatomic) IBOutlet UILabel * timeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *timeLabel;
 
-@property (strong, nonatomic) NSDateFormatter * dateFormatter;
+@property (strong, nonatomic) RKCalendarLink *minuteCalendarLink;
+@property (strong, nonatomic) RKCalendarLink *secondsCalendarLink;
 
-@property (strong, nonatomic) RKCalendarLink * calendarLink;
+@property (nonatomic) BOOL shouldShowColon;
 
 @end
 
@@ -30,17 +31,26 @@
 {
 	[super viewDidLoad];
 
-	NSDateFormatter * formatter = [[NSDateFormatter alloc] init];
-	formatter.dateFormat = @"HH:mm";
-	self.dateFormatter = formatter;
+    self.shouldShowColon = YES;
 
 	__weak __typeof(self) w_self = self;
-	self.calendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitMinute updateBlock:^ {
-
-		w_self.timeLabel.text = [w_self.dateFormatter stringFromDate:[NSDate date]];
-
+	self.minuteCalendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitMinute updateBlock:^ {
+        [w_self updateDisplayedDate];
 		NSLog(@"minutes has changed");
 	}];
+
+    self.secondsCalendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond updateBlock:^{
+        w_self.shouldShowColon = !w_self.shouldShowColon;
+        [w_self updateDisplayedDate];
+    }];
+}
+
+- (void) updateDisplayedDate
+{
+    NSDateFormatter *withFormatter = [[NSDateFormatter alloc] init];
+    withFormatter.dateFormat = self.shouldShowColon ? @"HH:mm" : @"HH mm";
+
+    self.timeLabel.text = [withFormatter stringFromDate:[NSDate date]];
 }
 
 @end
