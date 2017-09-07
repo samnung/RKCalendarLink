@@ -84,4 +84,23 @@ describe(@"next unit change math", ^ {
 	});
 });
 
+it(@"it handles deallocation of link well", ^{
+    __block int triggerCount = 0;
+
+    @autoreleasepool {
+        RKCalendarLink *link = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond updateBlock:^{
+            triggerCount += 1;
+        }];
+    }
+
+    waitUntil(^(DoneCallback done) {
+        // wait for 2 seconds
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            done();
+        });
+    });
+
+    expect(triggerCount).will.equal(1); // the block should be called exactly one time, the first time before invalidation
+});
+
 SpecEnd

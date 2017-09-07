@@ -5,10 +5,50 @@
 
 #import "RKCalendarLink.h"
 
+@interface RKWeakTimerTarget: NSObject
+@end
+
+@implementation RKWeakTimerTarget
+
+{
+    __weak id _target;
+    SEL _selector;
+}
+
+- (instancetype) initWithTarget:(id)target selector:(SEL)selector
+{
+    self = [super init];
+    if ( self )
+    {
+        _target = target;
+        _selector = selector;
+    }
+    return self;
+}
+
+- (void) timerDidFire:(NSTimer *)timer
+{
+    if ( _target )
+    {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        [_target performSelector:_selector withObject:timer];
+#pragma clang diagnostic pop
+    }
+    else
+    {
+        [timer invalidate];
+    }
+}
+
+@end
+
 
 @interface RKCalendarLink ()
 
-@property (nonatomic, nullable) NSTimer * timer;
+@property (nonatomic, nullable) NSTimer *timer;
+@property (nonatomic, nullable) RKWeakTimerTarget *timerTarget;
+@property (nonatomic) BOOL invalidated;
 @property (nonatomic, nonnull, copy) void (^ updateBlock)();
 
 @end
@@ -32,8 +72,8 @@
 	{
 		_calendarUnit = calendarUnit;
 		_unitInterval = 1;
-
-		self.updateBlock = updateBlock;
+        _invalidated = NO;
+		_updateBlock = updateBlock;
 
 		// first update
 		[self __timerFired];
@@ -49,6 +89,12 @@
 
 - (void) setUnitInterval:(NSUInteger)unitInterval
 {
+    if (self.invalidated)
+    {
+        NSLog(@"RKCalendarLink: WARN: link was already invalidated, do not call %@ and create new instance instead.", NSStringFromSelector(_cmd));
+        return;
+    }
+    
 	_unitInterval = unitInterval;
 
 	[self __invalidateTimer];
@@ -57,6 +103,12 @@
 
 - (void) setCalendarUnit:(NSCalendarUnit)calendarUnit
 {
+    if (self.invalidated)
+    {
+        NSLog(@"RKCalendarLink: WARN: link was already invalidated, do not call %@ and create new instance instead.", NSStringFromSelector(_cmd));
+        return;
+    }
+
 	if ( ![self.class __isValidCalendarUnit:calendarUnit] )
 	{
 		NSLog(@"RKCalendarLink: WARN: not valid calendar unit %u", (unsigned)calendarUnit);
@@ -73,6 +125,7 @@
 
 - (void) invalidate
 {
+    self.invalidated = YES;
     [self __invalidateTimer];
 }
 
@@ -81,6 +134,8 @@
 
 - (void) __invalidateTimer
 {
+    self.timerTarget = nil;
+
 	[self.timer invalidate];
 	self.timer = nil;
 }
@@ -94,8 +149,9 @@
 													inCalendar:[NSCalendar currentCalendar]];
 
 	// create new timer with fire date
-	self.timer = [[NSTimer alloc] initWithFireDate:nextFireDate interval:0 target:self
-										  selector:@selector(__timerFired) userInfo:nil repeats:NO];
+    self.timerTarget = [[RKWeakTimerTarget alloc] initWithTarget:self selector:@selector(__timerFired)];
+	self.timer = [[NSTimer alloc] initWithFireDate:nextFireDate interval:0 target:self.timerTarget
+                                          selector:@selector(timerDidFire:) userInfo:nil repeats:NO];
 
 	// schedule timer
 	[[NSRunLoop currentRunLoop] addTimer:self.timer forMode:NSRunLoopCommonModes];
@@ -103,6 +159,11 @@
 
 - (void) __timerFired
 {
+    if (self.invalidated)
+    {
+        return;
+    }
+
 	self.updateBlock();
 
 	[self __scheduleNext];
