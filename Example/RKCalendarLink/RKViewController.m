@@ -34,17 +34,33 @@
     self.shouldShowColon = YES;
 
 	__weak __typeof(self) w_self = self;
-	self.minuteCalendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitMinute updateBlock:^ {
+    self.minuteCalendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitMinute start:NO updateBlock:^ {
         [w_self updateDisplayedDate];
 		NSLog(@"minutes has changed");
 	}];
 
-    self.secondsCalendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond updateBlock:^{
+    self.secondsCalendarLink = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond start:NO updateBlock:^{
         w_self.shouldShowColon = !w_self.shouldShowColon;
         [w_self updateDisplayedDate];
     }];
+}
+
+- (void) viewWillAppear:(BOOL)animated
+{
+    [super viewWillAppear:animated];
+
+    [self.minuteCalendarLink start];
+    [self.secondsCalendarLink start];
 
     [self updateDisplayedDate];
+}
+
+- (void) viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+
+    [self.minuteCalendarLink stop];
+    [self.secondsCalendarLink stop];
 }
 
 - (void) updateDisplayedDate
