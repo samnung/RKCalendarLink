@@ -33,19 +33,44 @@
  */
 @property (nonatomic) NSUInteger unitInterval;
 
+@property (nonatomic, readonly, getter=isActive) BOOL active;
+
+@property (nonatomic, readonly, getter=isValid) BOOL valid;
+
 /**
  Creates and schedule calendar link in current NSRunLoop for NSRunLoopCommonModes.
+ Same as calling `-initWithCalendarUnit:start:updateBlock:` where start is YES.
 
  @see property calendarUnit
 
  @param calendarUnit  tracked calendar unit
- @param updateBlock  block, that will be fired after every specified calendar unit changes
+ @param updateBlock   block, that will be fired after every specified calendar unit changes
  */
 - (nullable instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit updateBlock:(nonnull void (^)())updateBlock;
 
 /**
- Removes the object from all runloop modes (releasing the receiver if
- it has been implicitly retained) and releases the 'target' object.
+ Creates calendar link. And schedules in current NSRunLoop if the parameter `start` is set to YES.
+
+ @see property calendarUnit
+
+ @param calendarUnit  tracked calendar unit
+ @param start         will start the link right after initialization
+ @param updateBlock   block, that will be fired after every specified calendar unit changes
+ */
+- (nullable instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit start:(BOOL)start updateBlock:(nonnull void (^)())updateBlock;
+
+/**
+ When it is more appropriate to start the link later, call this method.
+ */
+- (void) start;
+
+/**
+ Stops the link, it will not fire the `updateBlock` from now. Call -start method for restarting.
+ */
+- (void) stop;
+
+/**
+ Removes the object from all runloop modes and set the reciever to invalidated mode, so you can not use it anymore.
  */
 - (void) invalidate;
 

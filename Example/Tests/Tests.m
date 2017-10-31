@@ -27,6 +27,16 @@ static NSDate * DateWithOnlyCalendarUnits(NSDate * date, NSCalendar * calendar, 
 	return [calendar dateFromComponents:components];
 }
 
+static void waitForSeconds(NSTimeInterval seconds)
+{
+    waitUntil(^(DoneCallback done) {
+        // wait for 1 second
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(seconds * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            done();
+        });
+    });
+}
+
 
 
 SpecBegin(InitialSpecs)
@@ -84,7 +94,7 @@ describe(@"next unit change math", ^ {
 	});
 });
 
-it(@"it handles deallocation of link well", ^{
+it(@"it does not call the update block right after initialization", ^{
     __block int triggerCount = 0;
 
     @autoreleasepool {
@@ -93,14 +103,96 @@ it(@"it handles deallocation of link well", ^{
         }];
     }
 
-    waitUntil(^(DoneCallback done) {
-        // wait for 2 seconds
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            done();
-        });
+    waitForSeconds(2);
+
+    expect(triggerCount).will.equal(0); // the block should not be called
+});
+
+it(@"it handles deallocation of link well, it invalidates self after deallocation", ^{
+    __block int triggerCount = 0;
+
+    @autoreleasepool {
+        __block RKCalendarLink *link = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond updateBlock:^{
+            triggerCount += 1;
+        }];
+
+        // wait for first invoke (after 1 second)
+        waitForSeconds(1);
+        link = nil;
+    }
+
+    waitForSeconds(2);
+    expect(triggerCount).will.equal(1);
+});
+
+describe(@"start & stop", ^{
+    it(@"allows to start the link after some time", ^{
+        __block int triggerCount = 0;
+
+        RKCalendarLink *link = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond start:NO updateBlock:^{
+            triggerCount += 1;
+        }];
+
+        waitForSeconds(2);
+        expect(triggerCount).to.equal(0);
+
+        [link start];
+
+        waitForSeconds(1);
+        expect(triggerCount).to.equal(1);
     });
 
-    expect(triggerCount).will.equal(1); // the block should be called exactly one time, the first time before invalidation
+    it(@"allows to stop the link after some time", ^{
+        __block int triggerCount = 0;
+
+        RKCalendarLink *link = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond updateBlock:^{
+            triggerCount += 1;
+        }];
+
+        waitForSeconds(1);
+        expect(triggerCount).to.equal(1);
+
+        [link stop];
+
+        waitForSeconds(2);
+        expect(triggerCount).to.equal(1);
+    });
+
+    it(@"allows to investigate whether the link is active", ^{
+        __block int triggerCount = 0;
+
+        RKCalendarLink *link = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond start:NO updateBlock:^{
+            triggerCount += 1;
+        }];
+        expect(link.isActive).to.equal(NO);
+
+        [link start];
+        expect(link.isActive).to.equal(YES);
+
+        [link stop];
+        expect(link.isActive).to.equal(NO);
+
+        [link invalidate];
+        expect(link.isActive).to.equal(NO);
+    });
+
+    it(@"allows to investigate whether the link is valid", ^{
+        __block int triggerCount = 0;
+
+        RKCalendarLink *link = [[RKCalendarLink alloc] initWithCalendarUnit:NSCalendarUnitSecond start:NO updateBlock:^{
+            triggerCount += 1;
+        }];
+        expect(link.isValid).to.equal(YES);
+
+        [link start];
+        expect(link.isValid).to.equal(YES);
+
+        [link stop];
+        expect(link.isValid).to.equal(YES);
+
+        [link invalidate];
+        expect(link.isValid).to.equal(NO);
+    });
 });
 
 SpecEnd

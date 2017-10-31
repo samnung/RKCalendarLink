@@ -58,6 +58,11 @@
 
 - (instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit updateBlock:(void (^)())updateBlock
 {
+    return [self initWithCalendarUnit:calendarUnit start:YES updateBlock:updateBlock];
+}
+
+- (instancetype) initWithCalendarUnit:(NSCalendarUnit)calendarUnit start:(BOOL)start updateBlock:(void (^)())updateBlock
+{
 	// updateBlock is required, otherwise it doesn't make sense
 	NSParameterAssert(updateBlock);
 
@@ -75,8 +80,10 @@
         _invalidated = NO;
 		_updateBlock = updateBlock;
 
-		// first update
-		[self __timerFired];
+        if (start)
+        {
+            [self __scheduleNext];
+        }
 	}
 
 	return self;
@@ -84,7 +91,7 @@
 
 - (void) dealloc
 {
-	[self __invalidateTimer];
+	[self invalidate];
 }
 
 - (void) setUnitInterval:(NSUInteger)unitInterval
@@ -123,12 +130,43 @@
 	[self __scheduleNext];
 }
 
+- (void) start
+{
+    if (self.invalidated)
+    {
+        NSLog(@"RKCalendarLink: WARN: link was already invalidated, do not call %@ and create new instance instead.", NSStringFromSelector(_cmd));
+        return;
+    }
+
+    [self __scheduleNext];
+}
+
+- (void) stop
+{
+    if (self.invalidated)
+    {
+        NSLog(@"RKCalendarLink: WARN: link was already invalidated, do not call %@ and create new instance instead.", NSStringFromSelector(_cmd));
+        return;
+    }
+
+    [self __invalidateTimer];
+}
+
 - (void) invalidate
 {
     self.invalidated = YES;
     [self __invalidateTimer];
 }
 
+- (BOOL) isActive
+{
+    return self.timer != nil;
+}
+
+- (BOOL) isValid
+{
+    return !self.invalidated;
+}
 
 #pragma mark Private
 

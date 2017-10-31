@@ -43,6 +43,8 @@
         w_self.shouldShowColon = !w_self.shouldShowColon;
         [w_self updateDisplayedDate];
     }];
+
+    [self updateDisplayedDate];
 }
 
 - (void) updateDisplayedDate
